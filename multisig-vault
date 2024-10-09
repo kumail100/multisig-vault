@@ -1,0 +1,40 @@
+contract MultiSigVault {
+    // List of public keys (owners of the vault)
+    PubKey[3] owners;
+    // Required number of signatures to unlock the vault
+    int requiredSignatures;
+
+    // Constructor to initialize the contract with public keys of owners and number of required signatures
+    constructor(PubKey[3] _owners, int _requiredSignatures) {
+        owners = _owners;
+        requiredSignatures = _requiredSignatures;
+    }
+
+    // Function to check if a public key is an owner
+    private function isOwner(PubKey pubKey) : bool {
+        bool ownerExists = false;
+        for (int i = 0; i < owners.length; i++) {
+            if (owners[i] == pubKey) {
+                ownerExists = true;
+                break;
+            }
+        }
+        return ownerExists;
+    }
+
+    // Unlock function that requires the correct number of signatures
+    public function unlock(Sig[3] signatures, PubKey[3] pubKeys) {
+        // Ensure we have the correct number of signatures
+        int validSignatures = 0;
+        for (int i = 0; i < pubKeys.length; i++) {
+            if (isOwner(pubKeys[i])) {
+                // Check that the signature matches the corresponding public key
+                if (checkSig(signatures[i], pubKeys[i])) {
+                    validSignatures++;
+                }
+            }
+        }
+        // Ensure the number of valid signatures meets the required threshold
+        require(validSignatures >= requiredSignatures, "Not enough valid signatures");
+    }
+}
