@@ -1,3 +1,3 @@
-Scrypt app written for the BSV Blockchain Platform
-
 Multisig Vault
+Written in Scrypt.
+Deploys on BSV Blockchain
